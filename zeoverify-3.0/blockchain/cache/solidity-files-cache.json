@@ -1,0 +1,77 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "C:\\Users\\dhang\\OneDrive\\Desktop\\Zeoverify-3.0\\zeoverify-3.0\\blockchain\\contracts\\Lock.sol": {
+      "lastModificationDate": 1753616178551,
+      "contentHash": "88c09042fe2b3a3c0df56fa162eeee82",
+      "sourceName": "contracts/Lock.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "Lock"
+      ]
+    },
+    "C:\\Users\\dhang\\OneDrive\\Desktop\\Zeoverify-3.0\\zeoverify-3.0\\blockchain\\contracts\\ZeoDocumentVerifier.sol": {
+      "lastModificationDate": 1753616178543,
+      "contentHash": "12c15dcf74efd9468b54f88f7bdc426e",
+      "sourceName": "contracts/ZeoDocumentVerifier.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "ZeoDocumentVerifier"
+      ]
+    }
+  }
+}
