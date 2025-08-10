@@ -1,32 +1,43 @@
-# app.py
 from flask import Flask, request, jsonify
-from ocr_engine import extract_text_from_image
-from fraud_detector import detect_fraud
+from ocr import extract_text
+from fraud_checker import check_fraud
+from ml_model.predict import predict_doc_type_ml
+import hashlib
+import os
 
 app = Flask(__name__)
+UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/verify-document', methods=['POST'])
 def verify_document():
     if 'file' not in request.files:
-        return jsonify({'error': 'No file provided'}), 400
-    
+        return jsonify({"error": "No file uploaded"}), 400
+
     file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'Empty filename'}), 400
+    filepath = os.path.join(UPLOAD_FOLDER, file.filename)
+    file.save(filepath)
 
-    image_bytes = file.read()
+    # OCR
+    text = extract_text(filepath)
 
-    print("[INFO] Extracting text from image...")
-    text = extract_text_from_image(image_bytes)
-    print(f"[INFO] Extracted Text:\n{text}")
+    # ML
+    doc_type_ml = predict_doc_type_ml(text)
 
-    print("[INFO] Running fraud detection...")
-    is_fraud = detect_fraud(text)
+    # Fraud check
+    fraud_risk, fraud_issues = check_fraud(text)
+
+    # Blockchain proof (simulate: hash)
+    with open(filepath, 'rb') as f:
+        file_hash = hashlib.sha256(f.read()).hexdigest()
 
     return jsonify({
-        'extracted_text': text,
-        'fraud_detected': is_fraud
+        "document_type_ml": doc_type_ml,
+        "fraud_risk": fraud_risk,
+        "fraud_issues": fraud_issues,
+        "extracted_text": text,
+        "file_hash": file_hash
     })
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True, port=5001)
