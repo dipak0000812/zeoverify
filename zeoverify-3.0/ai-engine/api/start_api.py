@@ -24,13 +24,18 @@ def check_model_files():
     
     print(f"🔍 Checking model files in: {model_path}")
     
+    missing_files = []
     for file in required_files:
         file_path = os.path.join(model_path, file)
         if os.path.exists(file_path):
             print(f"✅ Found: {file}")
         else:
-            print(f"❌ Missing: {file}")
-            return False
+            print(f"⚠️ Missing: {file}")
+            missing_files.append(file)
+    
+    if missing_files:
+        print(f"⚠️ Some model files are missing. Will use rule-based classification as fallback.")
+        return True  # Allow startup with fallback
     
     return True
 
@@ -61,25 +66,27 @@ def setup_environment():
 
 def start_server():
     """Start the Flask server."""
-    print("\n🚀 Starting Certificate Verification API...")
+    print("\n🚀 Starting ZeoVerify 3.0 API...")
     print("=" * 50)
     
     try:
         # Import and run the app
-        from app import app, initialize_verifier
+        from app_main import initialize_app
         
-        # Initialize the verifier
-        if not initialize_verifier():
-            print("❌ Failed to initialize certificate verifier")
-            return False
+        # Initialize the app
+        app = initialize_app()
         
         # Get port from environment
         port = int(os.environ.get('PORT', 5000))
         
         print(f"✅ API starting on http://localhost:{port}")
         print("📋 Available endpoints:")
-        print(f"   GET  http://localhost:{port}/health")
-        print(f"   POST http://localhost:{port}/verify")
+        print(f"   GET  http://localhost:{port}/")
+        print(f"   GET  http://localhost:{port}/api/health")
+        print(f"   POST http://localhost:{port}/api/verify")
+        print(f"   POST http://localhost:{port}/api/verify-text")
+        print(f"   GET  http://localhost:{port}/api/blockchain/status")
+        print(f"   GET  http://localhost:{port}/api/verify/history")
         print("\n🛑 Press Ctrl+C to stop the server")
         print("=" * 50)
         
@@ -103,8 +110,7 @@ def main():
         sys.exit(1)
     
     if not check_model_files():
-        print("\n❌ Model files are missing. Please ensure the model is trained and saved.")
-        sys.exit(1)
+        print("\n⚠️ Model files are missing. Will use rule-based classification as fallback.")
     
     if not check_dependencies():
         print("\n❌ Dependencies are missing. Please install them first.")

@@ -34,7 +34,10 @@ zeoverify-3.0/
 ## ⚙️ Setup Guide
 
 > Clone repo first:
+<<<<<<< HEAD
+=======
 ```bash
+>>>>>>> 623d24562f9a3d178ba8c85174340944c954f0c4
 git clone https://github.com/dipak0000812/zeoverify.git
 cd zeoverify-3.0
 
@@ -71,4 +74,8 @@ AI Engine → returns extracted text & fraud
 
 Backend → stores hash on blockchain
 
+<<<<<<< HEAD
 Backend → sends final JSON:
+=======
+Backend → sends final JSON:
+>>>>>>> 623d24562f9a3d178ba8c85174340944c954f0c4

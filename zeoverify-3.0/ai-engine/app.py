@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from ocr import extract_text
 from fraud_checker import check_fraud
+from ocr import extract_text_from_image
 from ml_model.predict import predict_doc_type_ml
 import hashlib
 import os

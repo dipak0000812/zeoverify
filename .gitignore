@@ -1,6 +1,13 @@
 node_modules
 .env
 
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore logs
+*.log
+
 # Hardhat files
 /cache
 /artifacts

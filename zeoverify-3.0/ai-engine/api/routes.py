@@ -11,10 +11,14 @@ from werkzeug.utils import secure_filename
 import tempfile
 
 # Import our modular components
-from ..ocr import extract_text_from_file
-from ..classifier import DocumentClassifier
-from ..fraud_checker import FraudDetector
-from ..blockchain_utils import BlockchainManager
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from ocr import extract_text_from_file
+from classifier import DocumentClassifier
+from fraud_checker import FraudDetector
+from blockchain_utils import BlockchainManager
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -112,13 +116,15 @@ def verify_document():
             # Return comprehensive response
             response = {
                 "extracted_text": extracted_text[:500] + "..." if len(extracted_text) > 500 else extracted_text,
-                "ml_document_type": ml_document_type,
+                "doc_type_ml": ml_document_type,
+                "doc_type_rule": ml_document_type,  # For backward compatibility
                 "ml_confidence": round(ml_confidence * 100, 2),
-                "fraud_risk": fraud_risk,
-                "issues": issues,
-                "document_hash": document_hash,
+                "fraud_risk": "Low" if fraud_risk <= 30 else "Medium" if fraud_risk <= 70 else "High",
+                "fraud_issues": issues,
+                "file_hash": document_hash,
                 "blockchain_tx_hash": blockchain_tx_hash,
-                "filename": filename
+                "filename": filename,
+                "verification_id": int(hashlib.md5(document_hash.encode()).hexdigest()[:8], 16)
             }
             
             logger.info(f"Document verification completed: {ml_document_type} ({ml_confidence:.2%} confidence)")
@@ -158,11 +164,13 @@ def verify_text():
         
         response = {
             "extracted_text": text,
-            "ml_document_type": ml_document_type,
+            "doc_type_ml": ml_document_type,
+            "doc_type_rule": ml_document_type,  # For backward compatibility
             "ml_confidence": round(ml_confidence * 100, 2),
-            "fraud_risk": fraud_risk,
-            "issues": issues,
-            "document_hash": document_hash
+            "fraud_risk": "Low" if fraud_risk <= 30 else "Medium" if fraud_risk <= 70 else "High",
+            "fraud_issues": issues,
+            "file_hash": document_hash,
+            "verification_id": int(hashlib.md5(document_hash.encode()).hexdigest()[:8], 16)
         }
         
         return jsonify(response)
@@ -181,6 +189,53 @@ def blockchain_status():
         })
     except Exception as e:
         logger.error(f"Blockchain status error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@api_bp.route('/verify/history', methods=['GET'])
+def get_verification_history():
+    """Get verification history."""
+    try:
+        # For now, return empty history since we don't have persistent storage
+        # In a real implementation, this would query a database
+        return jsonify({
+            "status": "success",
+            "data": []
+        })
+    except Exception as e:
+        logger.error(f"Error getting verification history: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@api_bp.route('/verify/history/<int:verification_id>', methods=['GET'])
+def get_verification_by_id(verification_id):
+    """Get specific verification by ID."""
+    try:
+        # For now, return not found since we don't have persistent storage
+        return jsonify({"error": "Verification not found"}), 404
+    except Exception as e:
+        logger.error(f"Error getting verification by ID: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@api_bp.route('/verify/status/<file_hash>', methods=['GET'])
+def get_verification_status(file_hash):
+    """Get verification status by file hash."""
+    try:
+        # Check if hash exists on blockchain
+        if blockchain_manager.is_connected():
+            exists = blockchain_manager.verify_document_hash(file_hash)
+            return jsonify({
+                "status": "success",
+                "hash_exists": exists,
+                "blockchain_verified": exists
+            })
+        else:
+            return jsonify({
+                "status": "success",
+                "hash_exists": False,
+                "blockchain_verified": False,
+                "message": "Blockchain not connected"
+            })
+    except Exception as e:
+        logger.error(f"Error checking verification status: {e}")
         return jsonify({"error": str(e)}), 500
 
 @api_bp.errorhandler(404)
