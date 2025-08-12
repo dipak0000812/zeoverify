@@ -28,8 +28,12 @@ ignition/deployments/chain-31337
 *.bin
 *.pt
 *.pth
+*.pkl
 zeoverify-3.0/ai-engine/ml_model/saved_model/model.safetensors
 zeoverify-3.0/ai-engine/ml_model/saved_model/label_encoder.pkl
+zeoverify-3.0/ai-engine/ml_model/embedder.pkl
+zeoverify-3.0/ai-engine/ml_model/results/
+zeoverify-3.0/ai-engine/ml_model/vectorizer.pkl
 
 # Python virtual environments
 venv/
