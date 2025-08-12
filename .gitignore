@@ -22,3 +22,26 @@ __pycache__/
 
 # Hardhat Ignition default folder for deployments against a local node
 ignition/deployments/chain-31337
+
+# ML Model files (too large for git)
+*.safetensors
+*.bin
+*.pt
+*.pth
+zeoverify-3.0/ai-engine/ml_model/saved_model/model.safetensors
+zeoverify-3.0/ai-engine/ml_model/saved_model/label_encoder.pkl
+
+# Python virtual environments
+venv/
+env/
+.venv/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
